@@ -1,11 +1,22 @@
-name: golang-pipeline
+name: golang-workflow
 on: push
 jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v4
+
+    - name: Build
+      run: go build -v ./...
+
   test:
     runs-on: ubuntu-latest
     container: golang:1.22
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
 
       - name: Run Unit Tests
         run: GOOS=linux GOARCH=amd64 go test
@@ -36,7 +47,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.5.1
         with:
-          images: pavel74/hello-golang
+          images: pavel74/ci-cd
 
       - name: Build and push Docker Image
         uses: docker/build-push-action@v5
